@@ -1,0 +1,14 @@
+[
+  {
+    "title": "What is agent-starter-kit?",
+    "text": "agent-starter-kit is a minimal, working example of a Claude-powered AI agent, organized so it stays maintainable as tools, memory, and tests are added."
+  },
+  {
+    "title": "How does memory work?",
+    "text": "Conversation history is grouped into whole turns and trimmed oldest-first once it passes max_turns, so a tool_use/tool_result pair is never split across the trim boundary."
+  },
+  {
+    "title": "How do I add a tool?",
+    "text": "Create a module under src/tools/ that exports TOOL_DEF and a matching function, then register both in src/tools/__init__.py."
+  }
+]
