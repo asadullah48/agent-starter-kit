@@ -7,3 +7,4 @@ logs/*.log
 .pytest_cache/
 .ruff_cache/
 *.egg-info/
+.vercel

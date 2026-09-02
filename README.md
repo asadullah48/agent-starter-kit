@@ -10,14 +10,16 @@ Claude out of the box, or completely free and local via Ollama.
 
 ## Live demo
 
-**Status: not yet deployed.** The repo ships a Vercel entrypoint
-(`api/index.py` + `vercel.json`) and is ready to deploy as-is -- see
-[Deploying the demo](#deploying-the-demo) below for the one remaining
-manual step. Once live, `/health` and the interactive API docs at `/docs`
-work with no configuration; `/chat` runs in a safe "demo mode" (explains
-itself instead of erroring) unless an `ANTHROPIC_API_KEY` is set on the
-deployment, since a public endpoint with a real key attached would let
-any visitor spend it.
+**https://agent-starter-kit-six.vercel.app**
+
+- [`/health`](https://agent-starter-kit-six.vercel.app/health) -- liveness check
+- [`/docs`](https://agent-starter-kit-six.vercel.app/docs) -- interactive OpenAPI docs (try `/chat` from here)
+- `POST /chat` runs in a safe "demo mode" (explains itself instead of
+  erroring) because no `ANTHROPIC_API_KEY` is set on the deployment -- a
+  public endpoint with a real key attached would let any visitor spend
+  it. Clone the repo and add your own key (or `LLM_PROVIDER=ollama`) to
+  try the full agent. Note the deployment is also stateless per-request,
+  so multi-turn memory only works locally, not against the hosted demo.
 
 ## What's here
 
@@ -143,17 +145,16 @@ suite. CI runs the same command on every push and PR.
 
 That's it -- `agent/loop.py` and the API never need to change.
 
-## Deploying the demo
+## Redeploying / updating the demo
 
-The repo is deploy-ready (`api/index.py`, `vercel.json`, root
-`requirements.txt`). To make `Live demo` above a real link:
+The project is linked to Vercel via `vercel link` and connected to this
+GitHub repo, so a push to `main` triggers a new deployment automatically.
+To deploy manually:
 
-1. On [vercel.com/new](https://vercel.com/new), import
-   `asadullah48/agent-starter-kit` (one-time; the Vercel account needs
-   permission to create a project from this GitHub org, which is an
-   account-level setting, not a code change).
-2. Deploy with default settings -- Vercel auto-detects the FastAPI app.
-3. Optionally set `ANTHROPIC_API_KEY` as a project environment variable
-   to take `/chat` out of demo mode. Note the deployment is stateless
-   per-request, so multi-turn memory only works within the local CLI/API,
-   not across separate calls to the hosted demo.
+```bash
+vercel deploy --prod
+```
+
+To take `/chat` out of demo mode, set `ANTHROPIC_API_KEY` as a project
+environment variable in the Vercel dashboard (Settings -> Environment
+Variables) and redeploy.
