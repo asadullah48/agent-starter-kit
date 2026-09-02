@@ -13,6 +13,7 @@ from __future__ import annotations
 import os
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from agent.loop import run_agent
 from agent.memory import ConversationMemory
@@ -47,6 +48,13 @@ def _demo_mode(settings) -> bool:
     if settings.llm_provider == "ollama":
         return False  # assume the operator has Ollama reachable if they chose it
     return not os.getenv("ANTHROPIC_API_KEY")
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    """Bare-URL visitors land here (e.g. clicking the demo link) -- send
+    them to the interactive docs instead of a bare 404."""
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")
