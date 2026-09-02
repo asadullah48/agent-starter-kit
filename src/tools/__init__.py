@@ -12,6 +12,7 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from tools.calculator import TOOL_DEF as CALCULATOR_DEF, calculator
+from tools.currency import TOOL_DEF as CURRENCY_DEF, convert_currency
 from tools.knowledge_base import (
     TOOL_DEF as KNOWLEDGE_BASE_DEF,
     search_knowledge_base,
@@ -20,9 +21,10 @@ from tools.knowledge_base import (
 _REGISTRY: dict[str, Callable[..., str]] = {
     "calculator": calculator,
     "search_knowledge_base": search_knowledge_base,
+    "convert_currency": convert_currency,
 }
 
-_DEFINITIONS: list[dict[str, Any]] = [CALCULATOR_DEF, KNOWLEDGE_BASE_DEF]
+_DEFINITIONS: list[dict[str, Any]] = [CALCULATOR_DEF, KNOWLEDGE_BASE_DEF, CURRENCY_DEF]
 
 
 def get_tool_definitions() -> list[dict[str, Any]]:
@@ -33,9 +35,9 @@ def get_tool_definitions() -> list[dict[str, Any]]:
 def execute_tool(name: str, tool_input: dict[str, Any]) -> tuple[str, bool]:
     """Run a registered tool and return (result_text, is_error).
 
-    Never raises -- a bad tool name or a bad argument becomes an
-    `is_error=True` tool_result so Claude sees the failure and can retry
-    or explain it, instead of crashing the whole agent turn.
+    Never raises -- a bad tool name, a bad argument, or a missing API key
+    all become an `is_error=True` tool_result so Claude sees the failure
+    and can retry or explain it, instead of crashing the whole agent turn.
     """
     tool = _REGISTRY.get(name)
     if tool is None:

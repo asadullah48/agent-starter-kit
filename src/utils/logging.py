@@ -1,7 +1,9 @@
 """Logging setup shared by the CLI and the API.
 
-Logs to both the console and logs/app.log so `logs/` actually fills up
-during development instead of being an empty folder in the repo.
+Logs to both the console and logs/app.log during local development. On a
+read-only deployment filesystem (e.g. a serverless platform like Vercel,
+where only /tmp is writable) the file handler is skipped instead of
+crashing the whole app on import -- console logging still works there.
 """
 
 from __future__ import annotations
@@ -20,16 +22,20 @@ def configure_logging() -> None:
     if _configured:
         return
 
-    _LOG_DIR.mkdir(exist_ok=True)
     settings = get_settings()
+    handlers: list[logging.Handler] = [logging.StreamHandler()]
+
+    try:
+        _LOG_DIR.mkdir(exist_ok=True)
+        handlers.append(logging.FileHandler(_LOG_DIR / "app.log", encoding="utf-8"))
+    except OSError:
+        # Read-only filesystem -- fall back to console-only logging.
+        pass
 
     logging.basicConfig(
         level=settings.log_level,
         format="%(asctime)s %(levelname)-8s %(name)s: %(message)s",
-        handlers=[
-            logging.StreamHandler(),
-            logging.FileHandler(_LOG_DIR / "app.log", encoding="utf-8"),
-        ],
+        handlers=handlers,
     )
     _configured = True
 
