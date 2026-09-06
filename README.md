@@ -158,3 +158,11 @@ vercel deploy --prod
 To take `/chat` out of demo mode, set `ANTHROPIC_API_KEY` as a project
 environment variable in the Vercel dashboard (Settings -> Environment
 Variables) and redeploy.
+---
+
+## Author
+
+Built by **Asadullah Shafique**.
+
+🔗 Explore my portfolio showcasing Agentic AI projects and real-world applications:
+**[asadullahshafique-devunity.vercel.app](https://asadullahshafique-devunity.vercel.app)**
